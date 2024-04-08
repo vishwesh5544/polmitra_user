@@ -11,6 +11,7 @@ import 'package:user_app/screens/home_screen/home_screen.dart';
 import 'package:user_app/screens/login/login_screen.dart';
 import 'package:user_app/services/preferences_service.dart';
 import 'package:user_app/services/user_service.dart';
+import 'package:user_app/utils/city_state_provider.dart';
 import 'package:user_app/utils/color_provider.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,6 +22,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await PrefsService.init();
+  // initialize the provider to trigger the data loading
+  CityStateProvider();
   runApp(const MyApp());
 }
 

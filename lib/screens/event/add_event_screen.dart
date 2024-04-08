@@ -8,6 +8,7 @@ import 'package:user_app/bloc/polmitra_event/pevent_event.dart';
 import 'package:user_app/bloc/polmitra_event/pevent_state.dart';
 import 'package:user_app/enums/user_enums.dart';
 import 'package:user_app/services/preferences_service.dart';
+import 'package:user_app/utils/city_state_provider.dart';
 import 'package:user_app/utils/color_provider.dart';
 import 'package:user_app/utils/icon_builder.dart';
 import 'package:user_app/utils/location.dart';
@@ -41,15 +42,11 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
     determinePosition();
 
+    CityStateProvider();
+
     WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
       _dateController.text = _formatDate(selectedDate);
       _timeController.text = _formatTime(selectedTime);
-    });
-
-    _getCurrentLocation().then((value) {
-      setState(() {
-        _selectedLocation = value;
-      });
     });
   }
 
@@ -198,6 +195,24 @@ class _AddEventScreenState extends State<AddEventScreen> {
     }
   }
 
+  Widget _buildStatesDropdown() {
+    // Assuming you have a method to get the states list from the CityStateProvider
+    var states = CityStateProvider().states;
+
+    return DropdownButton<String>(
+      items: states.map<DropdownMenuItem<String>>((IndianState state) {
+        return DropdownMenuItem<String>(
+          value: state.statename,
+          child: Text(state.statename),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        // Handle state selection change
+      },
+      hint: Text('Select State'),
+    );
+  }
+
   String _formatDate(DateTime date) {
     return "${date.day}/${date.month}/${date.year}";
   }
@@ -262,6 +277,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
               ],
             ),
             const SizedBox(height: 20),
+            _buildStatesDropdown(),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -274,6 +290,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
       ),
     );
   }
+
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
   }
