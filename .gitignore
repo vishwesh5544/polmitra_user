@@ -10,6 +10,10 @@
 .svn/
 migrate_working_dir/
 
+# firebase files
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
 # fvm - flutter version manager
 .fvmrc
 .fvm
