@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:user_app/bloc/polmitra_event/pevent_bloc.dart';
 import 'package:user_app/bloc/polmitra_event/pevent_event.dart';
@@ -8,6 +10,7 @@ import 'package:user_app/enums/user_enums.dart';
 import 'package:user_app/services/preferences_service.dart';
 import 'package:user_app/utils/color_provider.dart';
 import 'package:user_app/utils/icon_builder.dart';
+import 'package:user_app/utils/location.dart';
 import 'package:user_app/utils/text_builder.dart';
 
 class AddEventScreen extends StatefulWidget {
@@ -21,8 +24,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
   final ImagePicker _picker = ImagePicker();
   List<XFile> _imageFileList = [];
 
-
-
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
   final TextEditingController _dateController = TextEditingController();
@@ -31,14 +32,30 @@ class _AddEventScreenState extends State<AddEventScreen> {
   final _eventDescriptionController = TextEditingController();
   final _locationController = TextEditingController();
 
+  LatLng _selectedLocation = const LatLng(23.0505088, 72.5359356);
+  GoogleMapController? _mapController;
+
   @override
   void initState() {
     super.initState();
+
+    determinePosition();
 
     WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
       _dateController.text = _formatDate(selectedDate);
       _timeController.text = _formatTime(selectedTime);
     });
+
+    _getCurrentLocation().then((value) {
+      setState(() {
+        _selectedLocation = value;
+      });
+    });
+  }
+
+  Future<LatLng> _getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return LatLng(position.latitude, position.longitude);
   }
 
   void _addEvent() async {
@@ -245,6 +262,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
               ],
             ),
             const SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 _addEvent();
@@ -255,5 +273,15 @@ class _AddEventScreenState extends State<AddEventScreen> {
         ),
       ),
     );
+  }
+  void _onMapCreated(GoogleMapController controller) {
+    _mapController = controller;
+  }
+
+  void _onTap(LatLng location) {
+    setState(() {
+      _selectedLocation = location;
+      _locationController.text = "${location.latitude}, ${location.longitude}";
+    });
   }
 }

@@ -2,6 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We need access to your location when the app is in use to fetch location data.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>We need access to your location at all times to fetch location data.</string>
+
+    <key>io.flutter.embedded_views_preview</key>
+    <string>YES</string>
+
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
