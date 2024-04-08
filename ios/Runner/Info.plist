@@ -7,9 +7,6 @@
     <key>NSLocationAlwaysUsageDescription</key>
     <string>We need access to your location at all times to fetch location data.</string>
 
-    <key>io.flutter.embedded_views_preview</key>
-    <string>YES</string>
-
 
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
