@@ -83,24 +83,36 @@ class _EventsScreenState extends State<EventsScreen> {
                     child: const Icon(Icons.add),
                   )
                 : null,
-            body: ListView.builder(
-              itemCount: state.events.length,
-              itemBuilder: (context, index) {
-                final event = state.events[index];
-                return ListTile(
-                  title: TextBuilder.getText(text: event.eventName, color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-                  subtitle: TextBuilder.getText(text: event.description, color: Colors.black, fontSize: 12),
-                  leading: SizedBox(
-                    width: 100,
-                    child: CachedNetworkImage(
-                      imageUrl: event.images.isNotEmpty ? event.images.first : 'https://via.placeholder.com/150',
-                      errorWidget: (context, url, error) => const Icon(Icons.error),
-                      fit: BoxFit.cover,
+            body: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: ListView.builder(
+                itemCount: state.events.length,
+                itemBuilder: (context, index) {
+                  final event = state.events[index];
+                  return ListTile(
+                    title: TextBuilder.getText(text: event.eventName, color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                    subtitle: TextBuilder.getText(text: event.description, color: Colors.black, fontSize: 12),
+                    leading: SizedBox(
+                      width: 100,
+                      child: CachedNetworkImage(
+                        imageUrl: event.images.isNotEmpty ? event.images.first : 'https://via.placeholder.com/150',
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                        fit: BoxFit.cover,
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  onTap: () => _showEventBottomSheet(event),
-                );
-              },
+                    onTap: () => _showEventBottomSheet(event),
+                  );
+                },
+              ),
             ),
           );
         }
