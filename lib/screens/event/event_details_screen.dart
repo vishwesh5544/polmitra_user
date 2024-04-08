@@ -26,6 +26,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // adding comment for testing workflow
     return const Placeholder();
   }
 }
