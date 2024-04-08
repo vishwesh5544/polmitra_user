@@ -13,6 +13,7 @@ migrate_working_dir/
 # firebase files
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
+lib/firebase_options.dart
 
 # fvm - flutter version manager
 .fvmrc
