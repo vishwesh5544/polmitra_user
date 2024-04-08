@@ -20,10 +20,8 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) {
-      setState(() {
-        _event = widget.event;
-      });
+    setState(() {
+      _event = widget.event;
     });
   }
 

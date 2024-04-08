@@ -72,4 +72,5 @@ class EventBloc extends Bloc<PolmitraEvent, PolmitraEventState> {
       emit(EventError(e.toString()));
     }
   }
+
 }
