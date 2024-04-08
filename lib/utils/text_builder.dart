@@ -8,8 +8,8 @@ class TextBuilder {
       Color color = ColorProvider.normalBlack,
       FontWeight fontWeight = FontWeight.normal,
       TextAlign textAlign = TextAlign.start,
-      TextOverflow overflow = TextOverflow.ellipsis}) {
-    return Text(text, style: TextStyle(fontSize: fontSize, color: color, overflow: overflow, fontWeight: fontWeight));
+      TextOverflow overflow = TextOverflow.ellipsis, int? maxLines}) {
+    return Text(text, maxLines: maxLines, style: TextStyle(fontSize: fontSize, color: color, overflow: overflow, fontWeight: fontWeight));
   }
 
   static TextStyle getTextStyle(
