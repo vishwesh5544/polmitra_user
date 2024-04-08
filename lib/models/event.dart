@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:user_app/models/indian_city.dart';
+import 'package:user_app/models/indian_state.dart';
 import 'package:user_app/models/user.dart';
+import 'package:user_app/utils/city_state_provider.dart';
 
 class Event {
   final String id;
@@ -7,7 +10,7 @@ class Event {
   final String description;
   final String date;
   final String time;
-  final String location;
+  final String address;
   final List<String> images;
   final String karyakartaId;
   final PolmitraUser? karyakarta;
@@ -16,8 +19,11 @@ class Event {
   final bool isActive;
   final Timestamp? createdAt;
   final Timestamp? updatedAt;
+  final IndianState state;
+  final IndianCity city;
 
   String get netaDisplayName => neta?.name ?? neta?.email ?? netaId;
+
   String get karyakartaDisplayName => karyakarta?.name ?? karyakarta?.email ?? karyakartaId;
 
   Event(
@@ -26,7 +32,7 @@ class Event {
       required this.description,
       required this.date,
       required this.time,
-      required this.location,
+      required this.address,
       required this.images,
       required this.karyakartaId,
       required this.netaId,
@@ -34,7 +40,9 @@ class Event {
       this.karyakarta,
       this.neta,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      required this.state,
+      required this.city});
 
   factory Event.fromDocument(DocumentSnapshot doc) {
     return Event(
@@ -43,7 +51,7 @@ class Event {
         description: doc['description'] ?? '',
         date: doc['date'] ?? '',
         time: doc['time'] ?? '',
-        location: doc['location'] ?? '',
+        address: doc['address'] ?? '',
         images: List<String>.from(doc['images'] ?? []),
         karyakartaId: doc['karyakartaId'] ?? '',
         netaId: doc['netaId'] ?? '',
@@ -51,7 +59,13 @@ class Event {
         createdAt: doc['createdAt'],
         updatedAt: doc['updatedAt'],
         karyakarta: doc['karyakarta'] != null ? PolmitraUser.fromMap(doc['karyakarta']) : null,
-        neta: doc['neta'] != null ? PolmitraUser.fromMap(doc['neta']) : null);
+        neta: doc['neta'] != null
+            ? PolmitraUser.fromMap(
+                doc['neta'],
+              )
+            : null,
+        state: IndianState.fromMap(doc['state']),
+        city: IndianCity.fromMap(doc['city']));
   }
 
   Map<String, dynamic> toJson() {
@@ -60,7 +74,7 @@ class Event {
       'description': description,
       'date': date,
       'time': time,
-      'location': location,
+      'location': address,
       'images': images,
       'karyakartaId': karyakartaId,
       'netaId': netaId,
@@ -68,7 +82,9 @@ class Event {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'neta': neta?.toMap(),
-      'karyakarta': karyakarta?.toMap()
+      'karyakarta': karyakarta?.toMap(),
+      'state': state?.toMap(),
+      'city': city?.toMap(),
     };
   }
 
@@ -78,21 +94,23 @@ class Event {
       String? description,
       String? date,
       String? time,
-      String? location,
+      String? address,
       List<String>? images,
       String? karyakartaId,
       String? netaId,
       bool? isActive,
       PolmitraUser? karyakarta,
       PolmitraUser? neta,
-      Timestamp? updatedAt}) {
+      Timestamp? updatedAt,
+      IndianState? state,
+      IndianCity? city}) {
     return Event(
       id: id ?? this.id,
       eventName: eventName ?? this.eventName,
       description: description ?? this.description,
       date: date ?? this.date,
       time: time ?? this.time,
-      location: location ?? this.location,
+      address: address ?? this.address,
       images: images ?? this.images,
       karyakartaId: karyakartaId ?? this.karyakartaId,
       netaId: netaId ?? this.netaId,
@@ -100,6 +118,9 @@ class Event {
       karyakarta: karyakarta ?? this.karyakarta,
       neta: neta ?? this.neta,
       createdAt: createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      state: state ?? this.state,
+      city: city ?? this.city,
     );
   }
 }

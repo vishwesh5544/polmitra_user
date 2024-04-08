@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -7,6 +8,8 @@ import 'package:user_app/bloc/polmitra_event/pevent_bloc.dart';
 import 'package:user_app/bloc/polmitra_event/pevent_event.dart';
 import 'package:user_app/bloc/polmitra_event/pevent_state.dart';
 import 'package:user_app/enums/user_enums.dart';
+import 'package:user_app/models/indian_city.dart';
+import 'package:user_app/models/indian_state.dart';
 import 'package:user_app/services/preferences_service.dart';
 import 'package:user_app/utils/city_state_provider.dart';
 import 'package:user_app/utils/color_provider.dart';
@@ -24,6 +27,9 @@ class AddEventScreen extends StatefulWidget {
 class _AddEventScreenState extends State<AddEventScreen> {
   final ImagePicker _picker = ImagePicker();
   List<XFile> _imageFileList = [];
+  List<IndianState> states = [];
+  IndianState? selectedState;
+  IndianCity? selectedCity;
 
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
@@ -31,10 +37,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   final TextEditingController _timeController = TextEditingController();
   final _eventNameController = TextEditingController();
   final _eventDescriptionController = TextEditingController();
-  final _locationController = TextEditingController();
-
-  LatLng _selectedLocation = const LatLng(23.0505088, 72.5359356);
-  GoogleMapController? _mapController;
+  final _addressController = TextEditingController();
 
   @override
   void initState() {
@@ -47,12 +50,12 @@ class _AddEventScreenState extends State<AddEventScreen> {
     WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
       _dateController.text = _formatDate(selectedDate);
       _timeController.text = _formatTime(selectedTime);
+      loadStates();
     });
   }
 
-  Future<LatLng> _getCurrentLocation() async {
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    return LatLng(position.latitude, position.longitude);
+  void loadStates() async {
+    states = CityStateProvider().states;
   }
 
   void _addEvent() async {
@@ -91,17 +94,28 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
     final eventName = _eventNameController.text.trim();
     final eventDescription = _eventDescriptionController.text.trim();
-    final location = _locationController.text.trim();
+    final location = _addressController.text.trim();
+
+    if(selectedState == null || selectedCity == null) {
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(
+          content: Text('Please select state and city'),
+        ),
+      );
+      return;
+    }
 
     bloc.add(UploadDataEvent(
       eventName: eventName,
       description: eventDescription,
-      location: location,
+      address: location,
       date: _formatDate(selectedDate),
       time: _formatTime(selectedTime),
       karyakartaId: userId,
       netaId: netaId,
       images: _imageFileList,
+      state: selectedState!,
+      city: selectedCity!,
     ));
   }
 
@@ -198,18 +212,41 @@ class _AddEventScreenState extends State<AddEventScreen> {
   Widget _buildStatesDropdown() {
     // Assuming you have a method to get the states list from the CityStateProvider
     var states = CityStateProvider().states;
-
-    return DropdownButton<String>(
-      items: states.map<DropdownMenuItem<String>>((IndianState state) {
-        return DropdownMenuItem<String>(
-          value: state.statename,
-          child: Text(state.statename),
+    return DropdownButtonFormField<IndianState>(
+      hint: TextBuilder.getText(text: 'Select State', fontSize: 16),
+      menuMaxHeight: 350,
+      value: selectedState,
+      onChanged: (IndianState? newValue) {
+        setState(() {
+          selectedState = newValue;
+          selectedCity = newValue!.cities[0]; // Automatically select the first city of the new state
+        });
+      },
+      items: states.map<DropdownMenuItem<IndianState>>((IndianState state) {
+        return DropdownMenuItem<IndianState>(
+          value: state,
+          child: SizedBox(width: 120, child: TextBuilder.getText(text: state.statename, fontSize: 16)),
         );
       }).toList(),
-      onChanged: (String? newValue) {
-        // Handle state selection change
+    );
+  }
+
+  Widget _buildCitiesDropdown() {
+    return DropdownButtonFormField<IndianCity>(
+      menuMaxHeight: 350,
+      hint: TextBuilder.getText(text: 'Select City', fontSize: 16),
+      value: selectedCity,
+      onChanged: (IndianCity? newValue) {
+        setState(() {
+          selectedCity = newValue;
+        });
       },
-      hint: Text('Select State'),
+      items: selectedState!.cities.map<DropdownMenuItem<IndianCity>>((IndianCity city) {
+        return DropdownMenuItem<IndianCity>(
+          value: city,
+          child: SizedBox(width: 120, child: TextBuilder.getText(text: city.cityname, fontSize: 16)),
+        );
+      }).toList(),
     );
   }
 
@@ -260,8 +297,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
               children: [
                 Flexible(
                   child: TextFormField(
-                    controller: _locationController,
-                    decoration: const InputDecoration(labelText: 'Location', enabledBorder: UnderlineInputBorder()),
+                    controller: _addressController,
+                    decoration: const InputDecoration(labelText: 'Address', enabledBorder: UnderlineInputBorder()),
                   ),
                 ),
                 IconBuilder.buildButton(
@@ -277,7 +314,15 @@ class _AddEventScreenState extends State<AddEventScreen> {
               ],
             ),
             const SizedBox(height: 20),
-            _buildStatesDropdown(),
+            Row(
+              children: [
+                Flexible(child: _buildStatesDropdown()),
+                if (selectedState != null) ...[
+                  const SizedBox(width: 20),
+                  Flexible(child: _buildCitiesDropdown()),
+                ]
+              ],
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -289,16 +334,5 @@ class _AddEventScreenState extends State<AddEventScreen> {
         ),
       ),
     );
-  }
-
-  void _onMapCreated(GoogleMapController controller) {
-    _mapController = controller;
-  }
-
-  void _onTap(LatLng location) {
-    setState(() {
-      _selectedLocation = location;
-      _locationController.text = "${location.latitude}, ${location.longitude}";
-    });
   }
 }

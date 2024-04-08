@@ -35,13 +35,12 @@ class EventBloc extends Bloc<PolmitraEvent, PolmitraEventState> {
       final karyaKarta = await _userService.getUserById(event.karyakartaId);
       final neta = await _userService.getUserById(event.netaId);
 
-
       final request = {
         'eventName': event.eventName,
         'description': event.description,
         'date': event.date,
         'time': event.time,
-        'location': event.location,
+        'address': event.address,
         'images': imageUrls,
         'netaId': event.netaId,
         'karyakartaId': event.karyakartaId,
@@ -49,7 +48,9 @@ class EventBloc extends Bloc<PolmitraEvent, PolmitraEventState> {
         'updatedAt': FieldValue.serverTimestamp(),
         'isActive': false,
         'karyakarta': karyaKarta?.toMap(),
-        'neta': neta?.toMap()
+        'neta': neta?.toMap(),
+        "state": event.state.toMap(),
+        "city": event.city.toMap(),
       };
 
       final docRef = await firestore.collection('events').add(request);
@@ -72,5 +73,4 @@ class EventBloc extends Bloc<PolmitraEvent, PolmitraEventState> {
       emit(EventError(e.toString()));
     }
   }
-
 }

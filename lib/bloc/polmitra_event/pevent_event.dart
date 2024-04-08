@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:user_app/models/indian_city.dart';
+import 'package:user_app/models/indian_state.dart';
+import 'package:user_app/utils/city_state_provider.dart';
 
 abstract class PolmitraEvent {}
 
@@ -14,10 +17,12 @@ class UploadDataEvent extends PolmitraEvent {
   final String description;
   final String date;
   final String time;
-  final String location;
+  final String address;
   final List<XFile> images;
   final String netaId;
   final String karyakartaId;
+  final IndianState state;
+  final IndianCity city;
 
   UploadDataEvent({
     required this.eventName,
@@ -26,8 +31,10 @@ class UploadDataEvent extends PolmitraEvent {
     required this.time,
     required this.netaId,
     required this.karyakartaId,
-    required this.location,
+    required this.address,
     required this.images,
+    required this.state,
+    required this.city,
   });
 }
 
