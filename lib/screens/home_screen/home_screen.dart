@@ -4,6 +4,7 @@ import 'package:user_app/enums/user_enums.dart';
 import 'package:user_app/screens/account/account_screen.dart';
 import 'package:user_app/screens/event/add_event_screen.dart';
 import 'package:user_app/screens/event/events_screen.dart';
+import 'package:user_app/screens/event_report/event_report_screen.dart';
 import 'package:user_app/screens/polls/polls_screen.dart';
 import 'package:user_app/services/preferences_service.dart';
 import 'package:user_app/utils/color_provider.dart';
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  void _toggleEndDrawer () {
+  void _toggleEndDrawer() {
     if (_scaffoldKey.currentState?.isEndDrawerOpen ?? false) {
       Navigator.of(context).pop(); // Close the drawer if it is open
     } else {
@@ -78,11 +79,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: FutureBuilder(
           future: _getDrawerOptions(),
           builder: (context, snapshot) {
-            if(snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
-            } else if(snapshot.hasError) {
+            } else if (snapshot.hasError) {
               return const Center(child: Text('Error loading drawer options'));
-            } else if(!snapshot.hasData) {
+            } else if (!snapshot.hasData) {
               return const Center(child: Text('No data found'));
             } else {
               return ListView(
@@ -123,23 +124,8 @@ class _HomeScreenState extends State<HomeScreen> {
       return <Widget>[
         _getDrawerHeader(),
         ListTile(
-          title: const Text('Add Event'),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => _wrapWithSafeArea(const AddEventScreen())),
-            );
-          },
-        ),
-        ListTile(
-          title: const Text('Add Poll'),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => _wrapWithSafeArea(const AddPollScreen()),
-                ));
-          },
+          title: const Text('Events Report'),
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const EventReportScreen())),
         ),
       ];
     } else if (user == UserRole.karyakarta.toString()) {

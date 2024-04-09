@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:user_app/utils/text_builder.dart';
 
 import '../../models/event.dart';
@@ -17,12 +18,31 @@ class EventDetailsScreen extends StatefulWidget {
 class _EventDetailsScreenState extends State<EventDetailsScreen> {
   late final Event _event;
 
+  final ImagePicker _picker = ImagePicker();
+  List<XFile> _imageFileList = [];
+
   @override
   void initState() {
     super.initState();
     setState(() {
       _event = widget.event;
     });
+  }
+
+  Future<void> _pickImages(int maxFiles) async {
+    if (maxFiles == 3) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('You can only upload 3 images'),
+        duration: Duration(seconds: 2),
+      ));
+    }
+
+    final List<XFile> pickedFileList = await _picker.pickMultiImage();
+    if (pickedFileList.isNotEmpty) {
+      setState(() {
+        _imageFileList = pickedFileList;
+      });
+    }
   }
 
   @override
@@ -105,6 +125,14 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                     child: TextBuilder.getText(text: _event.description, overflow: TextOverflow.visible, fontSize: 15),
                   ),
                 ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextBuilder.getText(text: 'Event photos:', fontSize: 16, fontWeight: FontWeight.bold),
+                  IconButton(icon: const Icon(Icons.add_a_photo), onPressed: () => _pickImages(_imageFileList.length)),
+                ],
               ),
               const SizedBox(height: 10),
               CarouselSlider.builder(
