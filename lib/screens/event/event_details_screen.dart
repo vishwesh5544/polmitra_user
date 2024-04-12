@@ -45,6 +45,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     }
   }
 
+  void _closeSheet() {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     // adding comment for testing workflow
@@ -102,9 +106,9 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                         const SizedBox(height: 10),
                         TextBuilder.getText(text: _event.eventName, fontSize: 18, fontWeight: FontWeight.bold),
                         const SizedBox(height: 10),
-                        TextBuilder.getText(text: _event.address, fontSize: 16, fontWeight: FontWeight.normal),
-                        TextBuilder.getText(text: _event.city.cityname, fontSize: 16, fontWeight: FontWeight.normal),
-                        TextBuilder.getText(text: _event.state.statename, fontSize: 16, fontWeight: FontWeight.normal),
+                        TextBuilder.getText(text: _event.address, fontSize: 14, fontWeight: FontWeight.normal),
+                        TextBuilder.getText(text: _event.city.cityname, fontSize: 14, fontWeight: FontWeight.normal),
+                        TextBuilder.getText(text: _event.state.statename, fontSize: 14, fontWeight: FontWeight.normal),
                       ],
                     ),
                   ],

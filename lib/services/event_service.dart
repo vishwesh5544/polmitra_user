@@ -3,11 +3,13 @@ import 'package:user_app/models/event.dart';
 import 'package:user_app/models/user.dart';
 
 class EventService {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
+
+  EventService(this._firestore);
 
   Future<List<Event>> getAllEvents() async {
     try {
-      final querySnapshot = await firestore.collection('events').get();
+      final querySnapshot = await _firestore.collection('events').get();
 
       final events = querySnapshot.docs.map((doc) => Event.fromDocument(doc)).toList();
       return events;
@@ -20,7 +22,7 @@ class EventService {
 
   Future<List<Event>> getAllEventsByKaryakartaId(PolmitraUser karyakarta) async {
     try {
-      final querySnapshot = await firestore.collection('events').where('karyakarta', isEqualTo: karyakarta).get();
+      final querySnapshot = await _firestore.collection('events').where('karyakarta', isEqualTo: karyakarta).get();
 
       final events = querySnapshot.docs.map((doc) => Event.fromDocument(doc)).toList();
       return events;

@@ -7,8 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:user_app/bloc/auth/auth_bloc.dart';
 import 'package:user_app/bloc/poll/poll_bloc.dart';
 import 'package:user_app/bloc/polmitra_event/pevent_bloc.dart';
-import 'package:user_app/screens/home_screen/home_screen.dart';
 import 'package:user_app/screens/login/login_screen.dart';
+import 'package:user_app/services/event_service.dart';
+import 'package:user_app/services/poll_event.dart';
 import 'package:user_app/services/preferences_service.dart';
 import 'package:user_app/services/user_service.dart';
 import 'package:user_app/utils/city_state_provider.dart';
@@ -24,38 +25,51 @@ void main() async {
   await PrefsService.init();
   // initialize the provider to trigger the data loading
   CityStateProvider();
-  runApp(const MyApp());
+  final firestore = FirebaseFirestore.instance;
+  final userService = UserService(firestore);
+  runApp(MyApp(
+    userService: userService,
+    firestore: firestore,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final UserService userService;
+  final FirebaseFirestore firestore;
+
+  const MyApp({required this.userService, required this.firestore, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final firebaseauth = FirebaseAuth.instance;
+    final firebasestorage = FirebaseStorage.instance;
+
     return MultiProvider(
       providers: [
-        Provider<UserService>(create: (context) => UserService()),
+        Provider<UserService>.value(value: userService),
+        Provider<PollService>(create: (context) => PollService(firestore)),
+        Provider<EventService>(create: (context) => EventService(firestore)),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthBloc>(
             create: (context) {
               final userService = Provider.of<UserService>(context, listen: false);
-              return AuthBloc(FirebaseAuth.instance, FirebaseFirestore.instance, userService);
+              return AuthBloc(firebaseauth, firestore, userService);
             },
             lazy: true,
           ),
           BlocProvider<PollBloc>(
             create: (context) {
               final userService = Provider.of<UserService>(context, listen: false);
-              return PollBloc(FirebaseFirestore.instance, userService);
+              return PollBloc(firestore, userService);
             },
             lazy: true,
           ),
           BlocProvider<EventBloc>(
             create: (context) {
               final userService = Provider.of<UserService>(context, listen: false);
-              return EventBloc(FirebaseFirestore.instance, FirebaseStorage.instance, userService);
+              return EventBloc(firestore, firebasestorage, userService);
             },
             lazy: true,
           ),
