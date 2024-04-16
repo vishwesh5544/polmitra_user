@@ -8,7 +8,7 @@ import 'package:user_app/bloc/polmitra_event/pevent_state.dart';
 import 'package:user_app/enums/user_enums.dart';
 import 'package:user_app/models/event.dart';
 import 'package:user_app/screens/event/add_event_screen.dart';
-import 'package:user_app/screens/event/event_details_screen.dart';
+import 'package:user_app/screens/common/event_details_screen.dart';
 import 'package:user_app/services/preferences_service.dart';
 import 'package:user_app/utils/text_builder.dart';
 
