@@ -4,7 +4,7 @@ import 'package:user_app/enums/user_enums.dart';
 import 'package:user_app/models/user.dart';
 
 class UserService {
-   final FirebaseFirestore _firestore;
+  final FirebaseFirestore _firestore;
 
   UserService(this._firestore);
 
@@ -16,6 +16,22 @@ class UserService {
       return users;
     } catch (e) {
       // Handle errors (e.g., print error message, throw exception)
+      print("Error fetching users: $e");
+      return []; // Return empty list on error
+    }
+  }
+
+  Future<List<PolmitraUser>> getKaryakartasByNetaId(String netaId) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('users')
+          .where('role', isEqualTo: UserRole.karyakarta.toString())
+          .where('netaId', isEqualTo: netaId)
+          .get();
+
+      final users = querySnapshot.docs.map((doc) => PolmitraUser.fromDocument(doc)).toList();
+      return users;
+    } catch (e) {
       print("Error fetching users: $e");
       return []; // Return empty list on error
     }

@@ -125,7 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
         _getDrawerHeader(),
         ListTile(
           title: const Text('Events Report'),
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const EventReportScreen())),
+          onTap: () {
+            _scaffoldKey.currentState?.closeEndDrawer();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const EventReportScreen()));
+          },
         ),
       ];
     } else if (user == UserRole.karyakarta.toString()) {
@@ -134,10 +137,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ListTile(
           title: const Text('Add Event'),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => _wrapWithSafeArea(const AddEventScreen())),
-            );
+            _scaffoldKey.currentState?.closeEndDrawer();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => _wrapWithSafeArea(const AddEventScreen())));
           },
         )
       ];
