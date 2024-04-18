@@ -9,6 +9,7 @@ import 'package:user_app/models/indian_state.dart';
 import 'package:user_app/models/user.dart';
 import 'package:user_app/screens/event_report/by_date.dart';
 import 'package:user_app/screens/event_report/by_location.dart';
+import 'package:user_app/screens/event_report/by_status.dart';
 import 'package:user_app/screens/event_report/event_app_bar.dart';
 import 'package:user_app/services/event_service.dart';
 import 'package:user_app/services/preferences_service.dart';
@@ -31,15 +32,7 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
   List<PolmitraUser> karyakartaList = [];
   PolmitraUser? user;
 
-  List<Event> allEventsList = [];
   List<Event> eventList = [];
-  List<Event> byDateEventList = [];
-  List<Event> byLocationEventList = [];
-  List<Event> byStatusEventList = [];
-  List<Event> byUserEventList = [];
-
-  IndianState? selectedState;
-  IndianCity? selectedCity;
 
   List<String> tabs = ['By Date', 'By Location', 'By Status', 'By User'];
 
@@ -85,11 +78,6 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
     final events = await _eventService.getEventsByNetaId(user!.uid);
     setState(() {
       eventList = events;
-      allEventsList = events;
-      byDateEventList = events;
-      byLocationEventList = events;
-      byStatusEventList = events;
-      byUserEventList = events;
     });
   }
 
@@ -109,89 +97,12 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
             children: const [
               ByDateTab(),
               ByLocationTab(),
-              Text(' Poll Reports'),
+              ByStatusTab(),
               Text(' Poll Reports'),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildByDate() {
-    DateTime now = DateTime.now();
-    DateTime today = DateTime(now.year, now.month, now.day);
-    DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
-    DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
-    DateTime startOfMonth = DateTime(now.year, now.month, 1);
-    DateTime endOfMonth = DateTime(now.year, now.month + 1, 0);
-    const format = 'dd/MM/yyyy';
-
-    return Column(
-      children: [
-        const SizedBox(height: 10),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    byDateEventList = allEventsList;
-                  });
-                },
-                child: const Text('All'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    byDateEventList =
-                        allEventsList.where((event) => DateFormat(format).parse(event.date) == today).toList();
-                  });
-                },
-                child: const Text('Today'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    byDateEventList = allEventsList.where((event) {
-                      DateTime eventDate = DateFormat(format).parse(event.date);
-                      return eventDate.isAfter(startOfWeek) && eventDate.isBefore(endOfWeek);
-                    }).toList();
-                  });
-                },
-                child: const Text('This Week'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    byDateEventList = allEventsList.where((event) {
-                      DateTime eventDate = DateFormat(format).parse(event.date);
-                      return eventDate.isAfter(startOfMonth) && eventDate.isBefore(endOfMonth);
-                    }).toList();
-                  });
-                },
-                child: const Text('This Month'),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 10),
-        Expanded(
-          child: ListView.builder(
-            itemCount: byDateEventList.length,
-            itemBuilder: (context, index) {
-              final event = byDateEventList[index];
-              return ListTile(
-                title: Text(event.eventName),
-                subtitle: Text(event.description),
-                trailing: Text(event.date),
-              );
-            },
-          ),
-        ),
-      ],
     );
   }
 
