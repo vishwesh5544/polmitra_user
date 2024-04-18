@@ -14,7 +14,7 @@ class EventsReportAppBar extends StatelessWidget implements PreferredSizeWidget 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: ColorProvider.deepSaffron,
+      backgroundColor: ColorProvider.lightLemon,
       title: const InkWell(
         child: Text('Reports'),
       ),

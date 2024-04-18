@@ -31,4 +31,12 @@ class ColorProvider {
   static const Color softOrange = Color(0xFFFFAB76); // Soft orange for less intense elements
   static const Color warmGrey = Color(0xFF949494); // Warm grey for neutral accents
   static const Color paleRed = Color(0xFFFFCDD2); // Pale red for backgrounds of warning elements
+
+  // Lemon color palette
+  static const Color lemonYellow = Color(0xFFFFE900); // Bright lemon yellow
+  static const Color lightLemon = Color(0xFFFFF44F); // Light lemon yellow
+  static const Color darkLemon = Color(0xFFC7B600); // Darker lemon yellow
+  static const Color vibrantLemon = Color(0xFFFFEE00); // Vibrant lemon yellow
+  static const Color softLemon = Color(0xFFFFF7AA); // Soft lemon yellow
+  static const Color deepLemon = Color(0xFFC9C700); // Deep lemon yellow
 }

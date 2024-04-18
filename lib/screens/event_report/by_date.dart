@@ -47,43 +47,55 @@ class _ByDateTabState extends State<ByDateTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    byDateEventList = events;
-                  });
-                },
-                child: const Text('All'),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      byDateEventList = events;
+                    });
+                  },
+                  child: const Text('All'),
+                ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    byDateEventList = events.where((event) => DateFormat(format).parse(event.date) == today).toList();
-                  });
-                },
-                child: const Text('Today'),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      byDateEventList = events.where((event) => DateFormat(format).parse(event.date) == today).toList();
+                    });
+                  },
+                  child: const Text('Today'),
+                ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    byDateEventList = events.where((event) {
-                      DateTime eventDate = DateFormat(format).parse(event.date);
-                      return eventDate.isAfter(startOfWeek) && eventDate.isBefore(endOfWeek);
-                    }).toList();
-                  });
-                },
-                child: const Text('This Week'),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      byDateEventList = events.where((event) {
+                        DateTime eventDate = DateFormat(format).parse(event.date);
+                        return eventDate.isAfter(startOfWeek) && eventDate.isBefore(endOfWeek);
+                      }).toList();
+                    });
+                  },
+                  child: const Text('This Week'),
+                ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    byDateEventList = events.where((event) {
-                      DateTime eventDate = DateFormat(format).parse(event.date);
-                      return eventDate.isAfter(startOfMonth) && eventDate.isBefore(endOfMonth);
-                    }).toList();
-                  });
-                },
-                child: const Text('This Month'),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      byDateEventList = events.where((event) {
+                        DateTime eventDate = DateFormat(format).parse(event.date);
+                        return eventDate.isAfter(startOfMonth) && eventDate.isBefore(endOfMonth);
+                      }).toList();
+                    });
+                  },
+                  child: const Text('This Month'),
+                ),
               ),
             ],
           ),

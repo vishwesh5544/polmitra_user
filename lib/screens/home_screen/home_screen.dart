@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _screens[_selectedIndex],
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: ColorProvider.deepSaffron,
+        backgroundColor: ColorProvider.lightLemon,
         title: InkWell(
           onTap: _toggleEndDrawer,
           child: const Text('User'),
@@ -94,14 +94,20 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedIconTheme: const IconThemeData(color: ColorProvider.softSaffron),
-        selectedItemColor: ColorProvider.softSaffron,
-        landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
-        backgroundColor: ColorProvider.deepSaffron,
-        items: _labelsMap.entries.map((e) => BottomNavigationBarItem(icon: Icon(e.value), label: e.key)).toList(),
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          canvasColor: ColorProvider.lightLemon,
+        ),
+        child: BottomNavigationBar(
+          selectedIconTheme: const IconThemeData(color: ColorProvider.deepSaffron),
+          selectedItemColor: ColorProvider.deepSaffron,
+          landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
+          unselectedIconTheme: const IconThemeData(color: ColorProvider.darkSaffron),
+          unselectedItemColor: ColorProvider.darkSaffron,
+          items: _labelsMap.entries.map((e) => BottomNavigationBarItem(icon: Icon(e.value), label: e.key)).toList(),
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
@@ -152,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
   DrawerHeader _getDrawerHeader() {
     return const DrawerHeader(
       decoration: BoxDecoration(
-        color: ColorProvider.deepSaffron,
+        color: ColorProvider.lightLemon,
       ),
       child: Text('User'),
     );
