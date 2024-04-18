@@ -7,6 +7,8 @@ import 'package:user_app/models/event.dart';
 import 'package:user_app/models/indian_city.dart';
 import 'package:user_app/models/indian_state.dart';
 import 'package:user_app/models/user.dart';
+import 'package:user_app/screens/event_report/by_date.dart';
+import 'package:user_app/screens/event_report/by_location.dart';
 import 'package:user_app/screens/event_report/event_app_bar.dart';
 import 'package:user_app/services/event_service.dart';
 import 'package:user_app/services/preferences_service.dart';
@@ -100,103 +102,18 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
           tabController: _tabController,
           initialize: initialize,
         ),
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            _buildByDate(),
-            _buildByLocation(),
-            const Text(' Poll Reports'),
-            const Text(' Poll Reports'),
-          ],
+        body: Provider<List<Event>>.value(
+          value: eventList,
+          child: TabBarView(
+            controller: _tabController,
+            children: const [
+              ByDateTab(),
+              ByLocationTab(),
+              Text(' Poll Reports'),
+              Text(' Poll Reports'),
+            ],
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildByLocation() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _buildStatesDropdown(),
-                const SizedBox(width: 10),
-                // _buildCitiesDropdown(),
-                IconButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedState = null;
-                        byLocationEventList = eventList;
-                      });
-                    },
-                    icon: const Icon(Icons.close))
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: byLocationEventList.length,
-              itemBuilder: (context, index) {
-                final event = eventList[index];
-                return ListTile(
-                  title: Text(event.eventName),
-                  subtitle: Text(event.description),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatesDropdown() {
-    // Assuming you have a method to get the states list from the CityStateProvider
-    var states = CityStateProvider().states;
-    return Expanded(
-      child: DropdownButtonFormField<IndianState>(
-        hint: TextBuilder.getText(text: 'Select State', fontSize: 16),
-        menuMaxHeight: 350,
-        value: selectedState,
-        onChanged: (IndianState? newValue) {
-          setState(() {
-            selectedState = newValue;
-            byLocationEventList = eventList.where((element) => element.state.statename == newValue!.statename).toList();
-            selectedCity = newValue!.cities[0]; // Automatically select the first city of the new state
-          });
-        },
-        items: states.map<DropdownMenuItem<IndianState>>((IndianState state) {
-          return DropdownMenuItem<IndianState>(
-            value: state,
-            child: SizedBox(width: 120, child: TextBuilder.getText(text: state.statename, fontSize: 16)),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  Widget _buildCitiesDropdown() {
-    return Expanded(
-      child: DropdownButtonFormField<IndianCity>(
-        menuMaxHeight: 350,
-        hint: TextBuilder.getText(text: 'Select City', fontSize: 16),
-        value: selectedCity,
-        onChanged: (IndianCity? newValue) {
-          setState(() {
-            selectedCity = newValue;
-          });
-        },
-        items: selectedState?.cities.map<DropdownMenuItem<IndianCity>>((IndianCity city) {
-          return DropdownMenuItem<IndianCity>(
-            value: city,
-            child: SizedBox(width: 120, child: TextBuilder.getText(text: city.cityname, fontSize: 16)),
-          );
-        }).toList(),
       ),
     );
   }
@@ -273,26 +190,6 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
               );
             },
           ),
-        ),
-      ],
-    );
-  }
-
-  AppBar _buildAppbar() {
-    return AppBar(
-      backgroundColor: ColorProvider.deepSaffron,
-      title: const InkWell(
-        child: Text('Reports'),
-      ),
-      bottom: TabBar(
-        controller: _tabController,
-        isScrollable: true,
-        tabs: tabs.map((e) => Tab(text: e)).toList(),
-      ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.refresh),
-          onPressed: initialize,
         ),
       ],
     );
