@@ -1,7 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:user_app/bloc/polmitra_event/pevent_bloc.dart';
+import 'package:user_app/bloc/polmitra_event/pevent_event.dart';
+import 'package:user_app/models/user.dart';
+import 'package:user_app/services/event_service.dart';
+import 'package:user_app/services/preferences_service.dart';
 import 'package:user_app/utils/text_builder.dart';
 
 import '../../models/event.dart';
@@ -18,9 +25,10 @@ class EventDetailsScreen extends StatefulWidget {
 
 class _EventDetailsScreenState extends State<EventDetailsScreen> {
   late final Event _event;
+  late final EventService _eventService;
+  late final PolmitraUser? user;
 
   final ImagePicker _picker = ImagePicker();
-  List<XFile> _imageFileList = [];
 
   @override
   void initState() {
@@ -28,26 +36,53 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
     setState(() {
       _event = widget.event;
     });
+
+    initialize();
   }
 
-  Future<void> _pickImages(int maxFiles) async {
-    if (maxFiles == 3) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  void initialize() async {
+    var prefs = await PrefsService.getUser();
+    setState(() {
+      user = prefs;
+      _eventService = Provider.of<EventService>(context, listen: false);
+    });
+  }
+
+  Future<bool> _pickImages(String netaId, String eventId, List<String> imageUrls) async {
+    var snackbar = ScaffoldMessenger.of(context);
+
+    if (imageUrls.length >= 3) {
+      snackbar.showSnackBar(const SnackBar(
         content: Text('You can only upload 3 images'),
         duration: Duration(seconds: 2),
       ));
+
+      return false;
     }
 
     final List<XFile> pickedFileList = await _picker.pickMultiImage();
-    if (pickedFileList.isNotEmpty) {
-      setState(() {
-        _imageFileList = pickedFileList;
-      });
+
+    int totalImagesAfterPick = imageUrls.length + (pickedFileList.length ?? 0);
+
+    // Check if the total exceeds 3
+    if (totalImagesAfterPick > 3) {
+      snackbar.showSnackBar(SnackBar(
+        content: Text('You can only upload a total of 3 images. You have already uploaded ${imageUrls.length} images.'),
+        duration: const Duration(seconds: 3),
+      ));
+      return false; // Return false indicating not all picked images will be uploaded
     }
-  }
 
-  void _closeSheet() {
+    if (pickedFileList.isNotEmpty) {
+      snackbar.showSnackBar(const SnackBar(
+        content: Text('Uploading images...'),
+        duration: Duration(seconds: 3),
+      ));
+      var res = await _eventService.updateEventImages(netaId, eventId, pickedFileList, imageUrls);
+      return res;
+    }
 
+    return false;
   }
 
   @override
@@ -71,7 +106,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                   ),
                   Text(
                     'Event Details',
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ],
               ),
@@ -139,7 +174,21 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                   if (widget.isUploadEnabled)
                     IconButton(
                       onPressed: () {
-                        _pickImages(_imageFileList.length);
+                        _pickImages(_event.netaId, _event.id, _event.images).then((res) {
+                          if (res && mounted && user != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text('Images uploaded successfully'),
+                              duration: Duration(seconds: 2),
+                            ));
+                            BlocProvider.of<EventBloc>(context).add(LoadEvents(netaId: user!.uid));
+                            Navigator.pop(context);
+                          }
+                        }).catchError((e) {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text('Error uploading images'),
+                            duration: Duration(seconds: 2),
+                          ));
+                        });
                       },
                       icon: const Icon(Icons.add_a_photo),
                     )

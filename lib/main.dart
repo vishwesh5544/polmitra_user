@@ -42,13 +42,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firebaseauth = FirebaseAuth.instance;
-    final firebasestorage = FirebaseStorage.instance;
+    final firebaseStorage = FirebaseStorage.instance;
 
     return MultiProvider(
       providers: [
         Provider<UserService>.value(value: userService),
         Provider<PollService>(create: (context) => PollService(firestore)),
-        Provider<EventService>(create: (context) => EventService(firestore)),
+        Provider<EventService>(create: (context) => EventService(firestore, firebaseStorage)),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<EventBloc>(
             create: (context) {
               final userService = Provider.of<UserService>(context, listen: false);
-              return EventBloc(firestore, firebasestorage, userService);
+              return EventBloc(firestore, firebaseStorage, userService);
             },
             lazy: true,
           ),
