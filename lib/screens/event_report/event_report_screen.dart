@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:user_app/models/event.dart';
 import 'package:user_app/models/user.dart';
@@ -21,6 +23,7 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
   late final TabController _tabController;
   List<PolmitraUser> karyakartaList = [];
   List<Event> eventList = [];
+  List<Event> allEventsList = [];
   PolmitraUser? user;
 
   List<String> tabs = ['By Date', 'By Location', 'By Status', 'By User'];
@@ -67,6 +70,7 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
     final events = await _eventService.getEventsByNetaId(user!.uid);
     setState(() {
       eventList = events;
+      allEventsList = events;
     });
   }
 
@@ -93,37 +97,62 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
   }
 
   Widget _buildByDate() {
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+    DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
+    DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
+    DateTime startOfMonth = DateTime(now.year, now.month, 1);
+    DateTime endOfMonth = DateTime(now.year, now.month + 1, 0);
+    const format = 'dd/MM/yyyy';
+
     return Column(
       children: [
         const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  eventList.sort((a, b) => a.date.compareTo(b.date));
-                });
-              },
-              child: const Text('Today'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  eventList.sort((a, b) => a.date.compareTo(b.date));
-                });
-              },
-              child: const Text('This Week'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  eventList.sort((a, b) => a.date.compareTo(b.date));
-                });
-              },
-              child: const Text('This Month'),
-            ),
-          ],
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    eventList = allEventsList;
+                  });
+                },
+                child: const Text('All'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    eventList = allEventsList.where((event) => DateFormat(format).parse(event.date) == today).toList();
+                  });
+                },
+                child: const Text('Today'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    eventList = allEventsList.where((event) {
+                      DateTime eventDate = DateFormat(format).parse(event.date);
+                      return eventDate.isAfter(startOfWeek) && eventDate.isBefore(endOfWeek);
+                    }).toList();
+                  });
+                },
+                child: const Text('This Week'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    eventList = allEventsList.where((event) {
+                      DateTime eventDate = DateFormat(format).parse(event.date);
+                      return eventDate.isAfter(startOfMonth) && eventDate.isBefore(endOfMonth);
+                    }).toList();
+                  });
+                },
+                child: const Text('This Month'),
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 10),
         Expanded(
