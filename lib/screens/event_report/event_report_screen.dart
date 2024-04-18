@@ -22,9 +22,15 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
   late final EventService _eventService;
   late final TabController _tabController;
   List<PolmitraUser> karyakartaList = [];
-  List<Event> eventList = [];
-  List<Event> allEventsList = [];
   PolmitraUser? user;
+
+  List<Event> allEventsList = [];
+  List<Event> eventList = [];
+  List<Event> byDateEventList = [];
+  List<Event> byLocationEventList = [];
+  List<Event> byStatusEventList = [];
+  List<Event> byUserEventList = [];
+
 
   List<String> tabs = ['By Date', 'By Location', 'By Status', 'By User'];
 
@@ -71,6 +77,10 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
     setState(() {
       eventList = events;
       allEventsList = events;
+      byDateEventList = events;
+      byLocationEventList = events;
+      byStatusEventList = events;
+      byUserEventList = events;
     });
   }
 
@@ -87,12 +97,32 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
           controller: _tabController,
           children: [
             _buildByDate(),
-            Text(' Poll Reports'),
+            _buildByLocation(),
             Text(' Poll Reports'),
             Text(' Poll Reports'),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildByLocation() {
+    return Column(
+      children: [
+        const SizedBox(height: 10),
+        Expanded(
+          child: ListView.builder(
+            itemCount: byLocationEventList.length,
+            itemBuilder: (context, index) {
+              final event = eventList[index];
+              return ListTile(
+                title: Text(event.eventName),
+                subtitle: Text(event.description),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -116,7 +146,7 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    eventList = allEventsList;
+                    byDateEventList = allEventsList;
                   });
                 },
                 child: const Text('All'),
@@ -124,7 +154,7 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    eventList = allEventsList.where((event) => DateFormat(format).parse(event.date) == today).toList();
+                    byDateEventList = allEventsList.where((event) => DateFormat(format).parse(event.date) == today).toList();
                   });
                 },
                 child: const Text('Today'),
@@ -132,7 +162,7 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    eventList = allEventsList.where((event) {
+                    byDateEventList = allEventsList.where((event) {
                       DateTime eventDate = DateFormat(format).parse(event.date);
                       return eventDate.isAfter(startOfWeek) && eventDate.isBefore(endOfWeek);
                     }).toList();
@@ -143,7 +173,7 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    eventList = allEventsList.where((event) {
+                    byDateEventList = allEventsList.where((event) {
                       DateTime eventDate = DateFormat(format).parse(event.date);
                       return eventDate.isAfter(startOfMonth) && eventDate.isBefore(endOfMonth);
                     }).toList();
@@ -157,9 +187,9 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
         const SizedBox(height: 10),
         Expanded(
           child: ListView.builder(
-            itemCount: eventList.length,
+            itemCount: byDateEventList.length,
             itemBuilder: (context, index) {
-              final event = eventList[index];
+              final event = byDateEventList[index];
               return ListTile(
                 title: Text(event.eventName),
                 subtitle: Text(event.description),
