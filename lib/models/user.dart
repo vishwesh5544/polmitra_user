@@ -9,6 +9,7 @@ class PolmitraUser {
   final String role;
   final bool isActive;
   final String name;
+  final int? points;
 
   PolmitraUser({
     required this.uid,
@@ -18,6 +19,7 @@ class PolmitraUser {
     required this.role,
     required this.isActive,
     required this.name,
+    this.points,
     this.neta
   });
 
@@ -31,7 +33,8 @@ class PolmitraUser {
       role: data['role'] ?? '',
       isActive: data['isActive'] ?? true,
       neta: data['neta'] != null ? PolmitraUser.fromMap(data['neta']) : null,
-      name: data['name'] ?? ''
+      name: data['name'] ?? '',
+      points: data['points'] ?? 0
     );
   }
 
@@ -45,6 +48,7 @@ class PolmitraUser {
       'isActive': isActive,
       'neta': neta?.toMap(),
       'name': name,
+      'points': points
     };
   }
 

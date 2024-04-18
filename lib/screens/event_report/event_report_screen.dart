@@ -10,6 +10,7 @@ import 'package:user_app/models/user.dart';
 import 'package:user_app/screens/event_report/by_date.dart';
 import 'package:user_app/screens/event_report/by_location.dart';
 import 'package:user_app/screens/event_report/by_status.dart';
+import 'package:user_app/screens/event_report/by_user.dart';
 import 'package:user_app/screens/event_report/event_app_bar.dart';
 import 'package:user_app/services/event_service.dart';
 import 'package:user_app/services/preferences_service.dart';
@@ -90,15 +91,19 @@ class _EventReportScreenState extends State<EventReportScreen> with TickerProvid
           tabController: _tabController,
           initialize: initialize,
         ),
-        body: Provider<List<Event>>.value(
-          value: eventList,
+        body: MultiProvider(
+          providers: [
+            Provider<List<PolmitraUser>>.value(value: karyakartaList),
+            Provider<PolmitraUser?>.value(value: user),
+            Provider<List<Event>>.value(value: eventList)
+          ],
           child: TabBarView(
             controller: _tabController,
             children: const [
               ByDateTab(),
               ByLocationTab(),
               ByStatusTab(),
-              Text(' Poll Reports'),
+              ByUserTab(),
             ],
           ),
         ),

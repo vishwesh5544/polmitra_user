@@ -8,8 +8,9 @@ import '../../models/event.dart';
 
 class EventDetailsScreen extends StatefulWidget {
   final Event event;
+  final bool isUploadEnabled;
 
-  const EventDetailsScreen({required this.event, super.key});
+  const EventDetailsScreen({required this.event, this.isUploadEnabled = true, super.key});
 
   @override
   State<EventDetailsScreen> createState() => _EventDetailsScreenState();
@@ -135,7 +136,13 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextBuilder.getText(text: 'Event photos:', fontSize: 16, fontWeight: FontWeight.bold),
-                  IconButton(icon: const Icon(Icons.add_a_photo), onPressed: () => _pickImages(_imageFileList.length)),
+                  if (widget.isUploadEnabled)
+                    IconButton(
+                      onPressed: () {
+                        _pickImages(_imageFileList.length);
+                      },
+                      icon: const Icon(Icons.add_a_photo),
+                    )
                 ],
               ),
               const SizedBox(height: 10),
