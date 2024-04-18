@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:user_app/models/event.dart';
 import 'package:user_app/models/indian_state.dart';
+import 'package:user_app/screens/common/event_details_screen.dart';
 import 'package:user_app/utils/city_state_provider.dart';
 import 'package:user_app/utils/text_builder.dart';
 
@@ -61,8 +62,19 @@ class _ByLocationTabState extends State<ByLocationTab> {
             itemBuilder: (context, index) {
               final event = byLocationEventList[index];
               return ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EventDetailsScreen(event: event),
+                    ),
+                  );
+                },
+                leading: CircleAvatar(
+                  child: Text(event.eventName[0]),
+                ),
                 title: Text(event.eventName),
-                subtitle: Text(event.description),
+                subtitle: Text(event.description, maxLines: 1, overflow: TextOverflow.ellipsis),
               );
             },
           ),

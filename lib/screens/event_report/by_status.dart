@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:user_app/models/event.dart';
+import 'package:user_app/screens/common/event_details_screen.dart';
 
 class ByStatusTab extends StatefulWidget {
   const ByStatusTab({super.key});
@@ -38,29 +39,38 @@ class _ByStatusTabState extends State<ByStatusTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    byStatusEventList = events;
-                  });
-                },
-                child: const Text('All'),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      byStatusEventList = events;
+                    });
+                  },
+                  child: const Text('All'),
+                ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    byStatusEventList = events.where((event) => event.isActive).toList();
-                  });
-                },
-                child: const Text('Active'),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      byStatusEventList = events.where((event) => event.isActive).toList();
+                    });
+                  },
+                  child: const Text('Active'),
+                ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    byStatusEventList = events.where((event) => !event.isActive).toList();
-                  });
-                },
-                child: const Text('Inactive'),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      byStatusEventList = events.where((event) => !event.isActive).toList();
+                    });
+                  },
+                  child: const Text('Inactive'),
+                ),
               ),
             ],
           ),
@@ -72,8 +82,19 @@ class _ByStatusTabState extends State<ByStatusTab> {
             itemBuilder: (context, index) {
               final event = byStatusEventList[index];
               return ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EventDetailsScreen(event: event),
+                    ),
+                  );
+                },
+                leading: CircleAvatar(
+                  child: Text(event.eventName[0]),
+                ),
                 title: Text(event.eventName),
-                subtitle: Text(event.description),
+                subtitle: Text(event.description, maxLines: 1, overflow: TextOverflow.ellipsis),
                 trailing: Text(event.date),
               );
             },

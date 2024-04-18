@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:user_app/models/event.dart';
+import 'package:user_app/screens/common/event_details_screen.dart';
 
 class ByDateTab extends StatefulWidget {
   const ByDateTab({super.key});
@@ -57,8 +58,7 @@ class _ByDateTabState extends State<ByDateTab> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    byDateEventList =
-                        events.where((event) => DateFormat(format).parse(event.date) == today).toList();
+                    byDateEventList = events.where((event) => DateFormat(format).parse(event.date) == today).toList();
                   });
                 },
                 child: const Text('Today'),
@@ -95,8 +95,19 @@ class _ByDateTabState extends State<ByDateTab> {
             itemBuilder: (context, index) {
               final event = byDateEventList[index];
               return ListTile(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EventDetailsScreen(
+                        event: event,
+                        isUploadEnabled: false,
+                      ),
+                    )),
+                leading: CircleAvatar(
+                  child: Text(event.eventName[0]),
+                ),
                 title: Text(event.eventName),
-                subtitle: Text(event.description),
+                subtitle: Text(event.description, maxLines: 1, overflow: TextOverflow.ellipsis),
                 trailing: Text(event.date),
               );
             },
