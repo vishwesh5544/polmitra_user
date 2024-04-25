@@ -28,6 +28,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool isKaryakarta = false;
   late final UserService _userService;
   List<PolmitraUser> _netas = [];
+  List<UserRole> _roles = [];
 
 
   @override
@@ -35,6 +36,13 @@ class _SignupScreenState extends State<SignupScreen> {
     super.initState();
     _userService = Provider.of<UserService>(context, listen: false);
     _fetchNetas();
+    _initRoles();
+  }
+
+  void _initRoles() {
+    setState(() {
+      _roles = UserRole.values.where((value) => value != UserRole.superadmin).toList();
+    });
   }
 
   Future<void> _fetchNetas() async {
@@ -132,8 +140,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   onChanged: _onRoleChanged,
                   validator: FormBuilderValidators.required(),
-                  items: UserRole.values
-                      .map(
+                  items: _roles.map(
                         (role) => DropdownMenuItem(
                           value: role,
                           child: Text(role.toString().split('.').last),

@@ -4,6 +4,7 @@ import 'package:user_app/bloc/poll/poll_bloc.dart';
 import 'package:user_app/bloc/poll/poll_event.dart';
 import 'package:user_app/bloc/poll/poll_state.dart';
 import 'package:user_app/enums/user_enums.dart';
+import 'package:user_app/models/poll.dart';
 import 'package:user_app/screens/polls/add_poll_screen.dart';
 import 'package:user_app/services/preferences_service.dart';
 import 'package:user_app/utils/color_provider.dart';
@@ -21,12 +22,15 @@ class _PollsScreenState extends State<PollsScreen> {
   String? netaId;
   String? userRole;
   String? userId;
+  TextEditingController _searchController = TextEditingController();
+  List<Poll> filteredPolls = [];
 
   @override
   void initState() {
     super.initState();
     _loadNetaIdandPolls();
     _loadUserRole();
+    _searchController.addListener(_filterPolls);
   }
 
   Future<void> _loadNetaIdandPolls() async {
@@ -48,7 +52,6 @@ class _PollsScreenState extends State<PollsScreen> {
     var role = await PrefsService.getRole();
     setState(() {
       userRole = role;
-
     });
   }
 
@@ -61,6 +64,17 @@ class _PollsScreenState extends State<PollsScreen> {
         });
   }
 
+  void _filterPolls() {
+    if (context.read<PollBloc>().state is PollsLoaded) {
+      final polls = (context.read<PollBloc>().state as PollsLoaded).polls;
+      final text = _searchController.text.toLowerCase();
+      setState(() {
+        filteredPolls =
+            text.isEmpty ? polls : polls.where((poll) => poll.question.toLowerCase().contains(text)).toList();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,6 +84,16 @@ class _PollsScreenState extends State<PollsScreen> {
               child: const Icon(Icons.add),
             )
           : null,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: TextField(
+          controller: _searchController,
+          decoration: const InputDecoration(
+            hintText: "Search polls...",
+            suffixIcon: Icon(Icons.search),
+          ),
+        ),
+      ),
       body: BlocBuilder<PollBloc, PollState>(
         builder: (context, state) {
           /// polls loading state
@@ -81,13 +105,18 @@ class _PollsScreenState extends State<PollsScreen> {
 
           /// polls loaded state
           else if (state is PollsLoaded) {
+            if (filteredPolls.isEmpty && _searchController.text.isEmpty) {
+              setState(() {
+                filteredPolls = state.polls;
+              });
+            }
             final polls = state.polls;
             return Padding(
               padding: const EdgeInsets.all(12.0),
               child: ListView.builder(
-                itemCount: polls.length,
+                itemCount: filteredPolls.length,
                 itemBuilder: (context, index) {
-                  final poll = polls[index];
+                  final poll = filteredPolls[index];
                   print(poll.toMap());
                   final isPollSubmitted = poll.responders.any((responder) => responder.uid == userId);
                   final totalVotes = poll.responses.values.reduce((sum, element) => sum + element);
@@ -99,13 +128,12 @@ class _PollsScreenState extends State<PollsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextBuilder.getText(
-                              text: poll.question,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            )
-                          ),
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextBuilder.getText(
+                                text: poll.question,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              )),
                           ...poll.options.asMap().entries.map((entry) {
                             final option = entry.value;
                             final voteCount = poll.responses[option] ?? 0;

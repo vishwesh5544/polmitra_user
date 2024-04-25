@@ -14,6 +14,8 @@ class ByDateTab extends StatefulWidget {
 class _ByDateTabState extends State<ByDateTab> {
   List<Event> byDateEventList = [];
   List<Event> events = [];
+  DateTime? selectedStartDate;
+  DateTime? selectedEndDate;
 
   @override
   void initState() {
@@ -26,6 +28,35 @@ class _ByDateTabState extends State<ByDateTab> {
     setState(() {
       events = Provider.of<List<Event>>(context);
       byDateEventList = events;
+    });
+  }
+
+  void _pickDateRange() async {
+    DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      initialDateRange: DateTimeRange(
+        start: selectedStartDate ?? DateTime.now(),
+        end: selectedEndDate ?? DateTime.now().add(Duration(days: 7)),
+      ),
+    );
+    if (picked != null) {
+      setState(() {
+        selectedStartDate = picked.start;
+        selectedEndDate = picked.end;
+        _filterEventsByDateRange();
+      });
+    }
+  }
+
+  void _filterEventsByDateRange() {
+    setState(() {
+      byDateEventList = events.where((event) {
+        DateTime eventDate = DateFormat('dd/MM/yyyy').parse(event.date);
+        return eventDate.isAfter(selectedStartDate!.subtract(Duration(days: 1))) &&
+            eventDate.isBefore(selectedEndDate!.add(Duration(days: 1)));
+      }).toList();
     });
   }
 
@@ -47,6 +78,13 @@ class _ByDateTabState extends State<ByDateTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: _pickDateRange,
+                  child: const Text('Pick Date Range'),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(

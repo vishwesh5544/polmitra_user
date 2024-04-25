@@ -24,7 +24,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _email = '', _password = '';
+  String _email = '',
+      _password = '';
   final double _formLabelFontSize = 16.0;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -70,7 +71,11 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FlutterLogo(size: 100),
+                  // FlutterLogo(size: 100),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.asset('assets/polmitra.jpg'),
+                  ),
                   SizedBox(height: 40),
                   TextFormField(
                     decoration: InputDecoration(
@@ -127,13 +132,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextSpan(
                         text: 'Don\'t have an account? ',
                         style: TextBuilder.getTextStyle(fontSize: 16, color: ColorProvider.normalBlack),
-                        recognizer: TapGestureRecognizer()..onTap = _navigateToSignUpScreen,
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = _navigateToSignUpScreen,
                       ),
                       // WidgetSpan(child: SizedBox(width: 2)),
                       TextSpan(
                         text: 'Register',
                         style: TextBuilder.getTextStyle(fontSize: 16, color: ColorProvider.normalBlack),
-                        recognizer: TapGestureRecognizer()..onTap = _navigateToSignUpScreen,
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = _navigateToSignUpScreen,
                       ),
                     ]),
                   )
