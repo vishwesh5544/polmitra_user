@@ -6,6 +6,8 @@ import 'package:user_app/bloc/auth/auth_event.dart';
 import 'package:user_app/bloc/auth/auth_state.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:user_app/enums/user_enums.dart';
+import 'package:user_app/extensions/string_extensions.dart';
 import 'package:user_app/models/user.dart';
 import 'package:user_app/services/user_service.dart';
 
@@ -23,7 +25,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: event.email,
+        email: event.email.asPolmitraEmail,
         password: event.password,
       );
 
@@ -40,7 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
           'neta': neta?.toMap(),
-          'isActive': false,
+          'isActive': event.role == UserRole.neta ? false : true,
         });
 
         emit(SignUpSuccess(user: user, role: event.role.toString()));
@@ -56,7 +58,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
-        email: event.email,
+        email: event.email.asPolmitraEmail,
         password: event.password,
       );
 

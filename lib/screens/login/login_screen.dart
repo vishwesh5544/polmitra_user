@@ -24,8 +24,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _email = '',
-      _password = '';
+  String _email = '', _password = '';
   final double _formLabelFontSize = 16.0;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -79,13 +78,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 40),
                   TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: 'Phone Number',
                       labelStyle: TextBuilder.getTextStyle(fontSize: _formLabelFontSize),
                       border: BorderProvider.createBorder(),
                       enabledBorder: BorderProvider.createBorder(),
                       focusedBorder: BorderProvider.createBorder(),
                     ),
-                    validator: (value) => value!.isEmpty ? 'Please enter your email' : null,
+                    validator: (value) => value!.isEmpty ? 'Please enter your phone number' : null,
                     onSaved: (value) => _email = value!,
                     controller: _emailController,
                   ),
@@ -119,10 +118,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       //   // Perform login action
                       //   print('Email: $_email, Password: $_password');
                       // }
+                      final bloc = context.read<AuthBloc>();
                       await PrefsService.clear();
-                      context
-                          .read<AuthBloc>()
-                          .add(LoginRequested(email: _emailController.text, password: _passwordController.text));
+
+                      bloc.add(LoginRequested(email: _emailController.text, password: _passwordController.text));
                       // _navigateToHomeScreen();
                     },
                   ),
@@ -132,15 +131,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextSpan(
                         text: 'Don\'t have an account? ',
                         style: TextBuilder.getTextStyle(fontSize: 16, color: ColorProvider.normalBlack),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = _navigateToSignUpScreen,
+                        recognizer: TapGestureRecognizer()..onTap = _navigateToSignUpScreen,
                       ),
                       // WidgetSpan(child: SizedBox(width: 2)),
                       TextSpan(
                         text: 'Register',
                         style: TextBuilder.getTextStyle(fontSize: 16, color: ColorProvider.normalBlack),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = _navigateToSignUpScreen,
+                        recognizer: TapGestureRecognizer()..onTap = _navigateToSignUpScreen,
                       ),
                     ]),
                   )

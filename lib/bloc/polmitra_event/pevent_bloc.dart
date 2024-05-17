@@ -46,7 +46,7 @@ class EventBloc extends Bloc<PolmitraEvent, PolmitraEventState> {
         'karyakartaId': event.karyakartaId,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
-        'isActive': false,
+        'isActive': true,
         'karyakarta': karyaKarta?.toMap(),
         'neta': neta?.toMap(),
         "state": event.state.toMap(),

@@ -106,14 +106,14 @@ class _SignupScreenState extends State<SignupScreen> {
                 FormBuilderTextField(
                   name: 'email',
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: 'Phone Number',
                     enabledBorder: BorderProvider.createUnderlineBorder(),
                     focusedBorder: BorderProvider.createUnderlineBorder(),
                     floatingLabelStyle: TextBuilder.getTextStyle(color: ColorProvider.vibrantSaffron, fontSize: 15.0),
                   ),
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(),
-                    FormBuilderValidators.email(),
+                    FormBuilderValidators.integer(),
                   ]),
                 ),
                 FormBuilderTextField(

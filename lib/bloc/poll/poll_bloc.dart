@@ -30,7 +30,7 @@ class PollBloc extends Bloc<PollEvent, PollState> {
         'responses': { for (var option in event.options) option : 0 },
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
-        'isActive': false, // isActive is set to false by default when a poll is created
+        'isActive': true, // isActive is set to false by default when a poll is created
         'neta': neta?.toMap(),
         'createdBy': createdBy?.toMap(),
       };
