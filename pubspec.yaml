@@ -59,6 +59,7 @@ dependencies:
   geocoding: ^3.0.0
   intl: ^0.18.1
   flutter_native_splash: ^2.4.0
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +87,8 @@ flutter:
   assets:
     - assets/states_cities.json
     - assets/polmitra.jpg
+    - assets/CARICATURE.png
+    - assets/caricature.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -115,9 +118,18 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 flutter_native_splash:
   color: "#000000"
-  image: assets/splash_icon.png
+#  image: assets/splash_icon.png
+#  image: assets/caricature.jpg
+  image: assets/CARICATURE.png
   android_12:
     color: "#000000"
-    image: assets/splash_icon.png
+#    image: assets/splash_icon.png
+#    image: assets/caricature.jpg
+    image: assets/CARICATURE.png
   android: true
   ios: true
+
+flutter_icons:
+    android: true
+    ios: true
+    image_path: "assets/CARICATURE.png"

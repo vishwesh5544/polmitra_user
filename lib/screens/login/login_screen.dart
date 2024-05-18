@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_app/bloc/auth/auth_bloc.dart';
 import 'package:user_app/bloc/auth/auth_event.dart';
@@ -50,6 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
               currentTime.difference(lastFailureSnackBarTime!) > Duration(seconds: 3)) {
             lastFailureSnackBarTime = currentTime;
 
+            print("Error: ${state.error}");
+
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
@@ -87,6 +90,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     validator: (value) => value!.isEmpty ? 'Please enter your phone number' : null,
                     onSaved: (value) => _email = value!,
                     controller: _emailController,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
                   ),
                   SizedBox(height: 20),
                   TextFormField(

@@ -88,8 +88,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else if(e.code == 'invalid-credential') {
         emit(AuthFailure('Invalid credentials provided'));
         return;
+      } else if(e.code == 'invalid-email') {
+        emit(AuthFailure('Invalid email. Only phone number is allowed'));
+        return;
       }
       else {
+        print("*** BLOC => ${e.toString()}");
         emit(AuthFailure(e.toString()));
         return;
       }
