@@ -1,0 +1,6 @@
+enum RatingEnum {
+  SASTISFIED,
+  NON_SASTISFIED,
+  MAYBE,
+  OTHER
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:user_app/components/policy_webview.dart';
 import 'package:user_app/enums/user_enums.dart';
 import 'package:user_app/screens/account/account_screen.dart';
 import 'package:user_app/screens/event/add_event_screen.dart';
@@ -136,6 +137,17 @@ class _HomeScreenState extends State<HomeScreen> {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const EventReportScreen()));
           },
         ),
+        ListTile(
+          title: const Text('Policy Agreement'),
+          onTap: () {
+            _scaffoldKey.currentState?.closeEndDrawer();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PolicyWebView(),
+                ));
+          },
+        ),
       ];
     } else if (user == UserRole.karyakarta.toString()) {
       return <Widget>[
@@ -146,7 +158,18 @@ class _HomeScreenState extends State<HomeScreen> {
             _scaffoldKey.currentState?.closeEndDrawer();
             Navigator.push(context, MaterialPageRoute(builder: (context) => _wrapWithSafeArea(const AddEventScreen())));
           },
-        )
+        ),
+        ListTile(
+          title: const Text('Policy Agreement'),
+          onTap: () {
+            _scaffoldKey.currentState?.closeEndDrawer();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PolicyWebView(),
+                ));
+          },
+        ),
       ];
     }
 

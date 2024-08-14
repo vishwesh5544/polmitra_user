@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_app/bloc/auth/auth_bloc.dart';
 import 'package:user_app/bloc/auth/auth_event.dart';
 import 'package:user_app/bloc/auth/auth_state.dart';
+import 'package:user_app/components/policy_webview.dart';
 import 'package:user_app/screens/home_screen/home_screen.dart';
 import 'package:user_app/screens/signup/signup.dart';
 import 'package:user_app/services/preferences_service.dart';
@@ -132,6 +133,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   SizedBox(height: 20),
+
+                  /**
+                   * register
+                   */
                   RichText(
                     text: TextSpan(children: [
                       TextSpan(
@@ -146,7 +151,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         recognizer: TapGestureRecognizer()..onTap = _navigateToSignUpScreen,
                       ),
                     ]),
-                  )
+                  ),
+
+                  SizedBox(height: 20),
+
+                  /**
+                   * privacy policy
+                   */
+                  RichText(
+                    text: TextSpan(children: [
+                      TextSpan(
+                        text: 'Terms & Conditions. Privacy Policy.',
+                        style: TextBuilder.getTextStyle(fontSize: 16, color: ColorProvider.normalBlack),
+                        recognizer: TapGestureRecognizer()..onTap = _navigateToPolicyScreen,
+                      ),
+                    ]),
+                  ),
                 ],
               ),
             ),
@@ -158,6 +178,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _navigateToSignUpScreen() {
     Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
+  }
+
+  void _navigateToPolicyScreen() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => PolicyWebView()));
   }
 
   void _navigateToHomeScreen() {

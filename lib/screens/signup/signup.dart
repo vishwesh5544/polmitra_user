@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:user_app/bloc/auth/auth_bloc.dart';
 import 'package:user_app/bloc/auth/auth_event.dart';
 import 'package:user_app/bloc/auth/auth_state.dart';
 import 'package:user_app/components/common_button.dart';
+import 'package:user_app/components/policy_webview.dart';
 import 'package:user_app/enums/user_enums.dart';
 import 'package:user_app/models/user.dart';
 import 'package:user_app/screens/login/login_screen.dart';
@@ -197,11 +199,28 @@ class _SignupScreenState extends State<SignupScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     )),
+                const SizedBox(height: 20),
+                /**
+                 * privacy policy
+                 */
+                RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: 'Terms & Conditions. Privacy Policy.',
+                      style: TextBuilder.getTextStyle(fontSize: 16, color: ColorProvider.normalBlack),
+                      recognizer: TapGestureRecognizer()..onTap = _navigateToPolicyScreen,
+                    ),
+                  ]),
+                ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _navigateToPolicyScreen() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const PolicyWebView()));
   }
 }

@@ -16,9 +16,6 @@ ios/Runner/GoogleService-Info.plist
 lib/firebase_options.dart
 
 # fvm - flutter version manager
-.fvmrc
-.fvm
-.fvm/flutter_sdk
 
 # IntelliJ related
 *.iml
@@ -52,3 +49,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# FVM Version Cache
+.fvm/

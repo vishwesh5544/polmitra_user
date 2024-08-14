@@ -57,11 +57,11 @@ class _PollsScreenState extends State<PollsScreen> {
 
   void _navigateToAddPollScreen() {
     _bottomSheetController = showBottomSheet(
-        // isScrollControlled: true,
-        context: context,
-        builder: (context) {
-          return const AddPollScreen();
-        });
+      context: context,
+      builder: (context) {
+        return const AddPollScreen();
+      },
+    );
   }
 
   void _filterPolls() {
@@ -70,8 +70,14 @@ class _PollsScreenState extends State<PollsScreen> {
       final text = _searchController.text.toLowerCase();
       setState(() {
         filteredPolls =
-            text.isEmpty ? polls : polls.where((poll) => poll.question.toLowerCase().contains(text)).toList();
+        text.isEmpty ? polls : polls.where((poll) => poll.question.toLowerCase().contains(text)).toList();
       });
+    }
+  }
+
+  void _updateFilteredPolls(List<Poll> polls) {
+    if (filteredPolls.isEmpty && _searchController.text.isEmpty) {
+      filteredPolls = polls;
     }
   }
 
@@ -80,9 +86,9 @@ class _PollsScreenState extends State<PollsScreen> {
     return Scaffold(
       floatingActionButton: userRole == UserRole.neta.toString()
           ? FloatingActionButton(
-              onPressed: _navigateToAddPollScreen,
-              child: const Icon(Icons.add),
-            )
+        onPressed: _navigateToAddPollScreen,
+        child: const Icon(Icons.add),
+      )
           : null,
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -105,11 +111,7 @@ class _PollsScreenState extends State<PollsScreen> {
 
           /// polls loaded state
           else if (state is PollsLoaded) {
-            if (filteredPolls.isEmpty && _searchController.text.isEmpty) {
-              setState(() {
-                filteredPolls = state.polls;
-              });
-            }
+            _updateFilteredPolls(state.polls);
             final polls = state.polls;
             return Padding(
               padding: const EdgeInsets.all(12.0),
@@ -168,7 +170,7 @@ class _PollsScreenState extends State<PollsScreen> {
                         children: [
                           Text(poll.question),
                           ...poll.options.map(
-                            (option) => RadioListTile(
+                                (option) => RadioListTile(
                               title: Text(option),
                               value: option,
                               groupValue: null,
@@ -212,6 +214,7 @@ class _PollsScreenState extends State<PollsScreen> {
   @override
   void dispose() {
     super.dispose();
+    _searchController.dispose();
     _bottomSheetController?.close();
   }
 }
