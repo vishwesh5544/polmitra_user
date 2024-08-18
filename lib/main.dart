@@ -9,6 +9,7 @@ import 'package:user_app/bloc/poll/poll_bloc.dart';
 import 'package:user_app/bloc/polmitra_event/pevent_bloc.dart';
 import 'package:user_app/screens/login/login_screen.dart';
 import 'package:user_app/services/event_service.dart';
+import 'package:user_app/services/neta_rating_service.dart';
 import 'package:user_app/services/poll_event.dart';
 import 'package:user_app/services/preferences_service.dart';
 import 'package:user_app/services/user_service.dart';
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
         Provider<UserService>.value(value: userService),
         Provider<PollService>(create: (context) => PollService(firestore)),
         Provider<EventService>(create: (context) => EventService(firestore, firebaseStorage)),
+        Provider<NetaRatingService>(create: (context) => NetaRatingService(firestore)),
       ],
       child: MultiBlocProvider(
         providers: [

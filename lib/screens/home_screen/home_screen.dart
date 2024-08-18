@@ -6,6 +6,7 @@ import 'package:user_app/screens/account/account_screen.dart';
 import 'package:user_app/screens/event/add_event_screen.dart';
 import 'package:user_app/screens/event/events_screen.dart';
 import 'package:user_app/screens/event_report/event_report_screen.dart';
+import 'package:user_app/screens/feedback/feedback_screen.dart';
 import 'package:user_app/screens/polls/polls_screen.dart';
 import 'package:user_app/services/preferences_service.dart';
 import 'package:user_app/utils/color_provider.dart';
@@ -28,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const EventsScreen(),
     const PollsScreen(),
+    const FeedbackScreen(),
     const AccountScreen(),
   ];
 
@@ -40,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final LabelsMap _labelsMap = {
     'Events': Icons.home,
     'Polls': Icons.work,
+    'Feedback': Icons.feedback,
     'Profile': Icons.person,
   };
 

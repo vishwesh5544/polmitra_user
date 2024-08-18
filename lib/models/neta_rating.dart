@@ -1,25 +1,33 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:user_app/models/user.dart';
 
 class NetaRating {
+  final String? id;
   final String netaId;
   final String karyakartaId;
+  final PolmitraUser karyakarta;
   final String rating;
   final String? reason;
-  final String createAt;
-  final String updatedAt;
+  final Timestamp? createAt;
+  final Timestamp? updatedAt;
 
   NetaRating(
-      {required this.netaId,
+      {this.id,
+      required this.netaId,
       required this.karyakartaId,
       required this.rating,
       required this.createAt,
       required this.updatedAt,
-      this.reason});
+      this.reason,
+      required this.karyakarta});
 
   factory NetaRating.fromMap(Map<String, dynamic> data) {
     return NetaRating(
+        id: data['id'] ?? '',
         netaId: data['netaId'] ?? '',
         karyakartaId: data['karyakartaId'] ?? '',
+        karyakarta: PolmitraUser.fromMap(data['karyakarta']),
         rating: data['rating'] ?? '',
         reason: data['reason'],
         createAt: data['createAt'] ?? '',
@@ -28,12 +36,14 @@ class NetaRating {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'netaId': netaId,
       'karyakartaId': karyakartaId,
       'rating': rating,
       'reason': reason,
       'createAt': createAt,
-      'updatedAt': updatedAt
+      'updatedAt': updatedAt,
+      'karyakarta': karyakarta.toMap(),
     };
   }
 }

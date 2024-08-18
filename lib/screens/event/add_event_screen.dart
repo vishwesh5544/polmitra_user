@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:user_app/bloc/polmitra_event/pevent_bloc.dart';
 import 'package:user_app/bloc/polmitra_event/pevent_event.dart';
@@ -14,7 +11,6 @@ import 'package:user_app/services/preferences_service.dart';
 import 'package:user_app/utils/city_state_provider.dart';
 import 'package:user_app/utils/color_provider.dart';
 import 'package:user_app/utils/icon_builder.dart';
-import 'package:user_app/utils/location.dart';
 import 'package:user_app/utils/text_builder.dart';
 
 class AddEventScreen extends StatefulWidget {
@@ -42,8 +38,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
   @override
   void initState() {
     super.initState();
-
-    determinePosition();
 
     CityStateProvider();
 
